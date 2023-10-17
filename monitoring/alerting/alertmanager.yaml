@@ -24,6 +24,9 @@ route:
       namespace: cattle-monitoring-system
     receiver: 'null'
   - match:
+      namespace: simple-mpesa
+    receiver: 'null'
+  - match:
       statefulset: activemq-activemq-artemis-slave
     receiver: 'null'
   - match:
