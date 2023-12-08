@@ -24,16 +24,33 @@ route:
       namespace: cattle-monitoring-system
     receiver: 'null'
   - match:
+      namespace: simple-mpesa
+    receiver: 'null'
+  - match:
       statefulset: activemq-activemq-artemis-slave
+    receiver: 'null'
+  - match:
+      alertname: InfoInhibitor
     receiver: 'null'
   - match:
       severity: info
     receiver: 'null'
+  - match:
+      severity: warning
+    receiver: gmail
+    continue: true
+  - receiver: slack
+
+  - match:
+      severity: critical
+    receiver: gmail
+    continue: true
+  - receiver: slack
 receivers:
 - name: 'null'
 - name: slack
   slack_configs:
-  - channel: '<YOUR-CHANNEL-HERE>'
+  - channel: 'alert-msg'
     send_resolved: true
     title: '[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] Monitoring Event Notification'
     text: |-
@@ -45,3 +62,10 @@ receivers:
       {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
       {{ end }}
       {{ end }}
+- name: gmail
+  email_configs:
+      - to: mosip-mec-alert@googlegroups.com
+        from: mosip.mec.noreply@gmail.com
+        smarthost: smtp.gmail.com:587
+        auth_username: mosip.mec.noreply@gmail.com
+        auth_password: 'password'

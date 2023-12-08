@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ssl-certificate-expiry-notification
+  namespace: cattle-monitoring-system
+spec:
+  groups:
+    - name: ssl-expiry-rule
+      rules:
+        - alert: SSLCertExpiringSoon
+          expr: probe_ssl_earliest_cert_expiry{job="prometheus-blackbox-exporter"} - time() < 86400 * 30
+          for: 300s
+          labels:
+            severity: warning
+          annotations:
+            description: SSL Certificate for {{ $labels.instance }} expires in {{ .Value | humanizeDuration }}

@@ -1,0 +1,13 @@
+serviceMonitor:
+  ## If true, a ServiceMonitor CRD is created for a prometheus operator
+  ## https://github.com/coreos/prometheus-operator for blackbox-exporter itself
+  ##
+  selfMonitor:
+    enabled: true
+  ## If true, a ServiceMonitor CRD is created for a prometheus operator
+  ## https://github.com/coreos/prometheus-operator for each target
+  ##
+  enabled: true
+  targets:
+    - name: ssl-certificate-expiry                    # Human readable URL that will appear in Prometheus / AlertManager
+      url: https://api-internal.mec.mosip.net/v1/syncdata/actuator/health  # The URL that blackbox will scrape
